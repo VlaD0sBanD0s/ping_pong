@@ -41,16 +41,21 @@ class Player(GameSprite):       #TODO Сына
         if keys[K_DOWN] and self.rect.y <win_height - 80:
             self.rect.y += self.speed
 
-ROCKET_ONE = Player('tennis_rocket.png',50, 424,17,90,125)
+ROCKET_ONE = Player('tennis_recket.png',50, 424,17,90,125)
 ROCKET_TWO = Player('tennis_rocket.png',620, 424, 17,90,125)
-BALLI =GameSprite('tennis_ball.png',200, 324, 4,90,90)
+BALLI =GameSprite('GRAN.png',200, 324, 2,70,70)
+font.init()
+font1 = font.Font(None,40)
+lose1 = font1.render('ИГРОК 1 ПРОИГРАЛ!',True,(180,0,5))
+lose2 = font1.render('ИГРОК 2 ПРОИГРАЛ!',True,(180,0,5))
 
 
 clock = time.Clock()
 FPS = 60
-
+speed_x = 5
+speed_y = 5
 RUN_GAME = True
-
+FINISH_GAME = False
 while RUN_GAME:                     #!!!ГЕЙМПЛЕЙ!!!
 
     for e in event.get():
@@ -58,7 +63,23 @@ while RUN_GAME:                     #!!!ГЕЙМПЛЕЙ!!!
             RUN_GAME = False
 
     window.blit(background,(0,0))
+    if FINISH_GAME != True:
+        BALLI.rect.x += speed_x
+        BALLI.rect.y += speed_y
 
+    if BALLI.rect.y > win_height-70 or BALLI.rect.y < 0:
+        speed_y *= -1
+
+    if sprite.collide_rect(ROCKET_ONE, BALLI) or sprite.collide_rect(ROCKET_TWO,BALLI):
+        speed_x *= -1
+
+    if BALLI.rect.x < 0:
+        FINISH_GAME = True
+        window.blit(lose1,(200,200))
+
+    if BALLI.rect.x > win_width:
+        FINISH_GAME = True
+        window.blit(lose2,(200,200))
 
     ROCKET_ONE.update_L()
     ROCKET_TWO.update_R()
